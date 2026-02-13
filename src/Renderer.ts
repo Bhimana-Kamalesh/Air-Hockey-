@@ -135,5 +135,53 @@ export class Renderer {
                 this.ctx.stroke();
             }
         }
+
+        this.ctx.globalAlpha = 1;
+        this.drawGoals();
+    }
+
+    drawGoals() {
+        const goalWidth = this.canvas.width * 0.4;
+        const goalLeft = (this.canvas.width - goalWidth) / 2;
+
+        // Save context for glow
+        this.ctx.save();
+        this.ctx.shadowBlur = 30;
+        this.ctx.shadowColor = '#00f3ff';
+        this.ctx.strokeStyle = '#00f3ff';
+        this.ctx.lineWidth = 5;
+        this.ctx.lineCap = 'round';
+
+        // Top Goal (Player 2 - Magenta)
+        this.ctx.shadowColor = '#ff00ff';
+        this.ctx.strokeStyle = '#ff00ff';
+        this.ctx.beginPath();
+        this.ctx.moveTo(goalLeft, 0);
+        this.ctx.lineTo(goalLeft + goalWidth, 0);
+        // Maybe a small arc inwards?
+        this.ctx.quadraticCurveTo(goalLeft + goalWidth / 2, 40, goalLeft + goalWidth, 0);
+        // Actually simple line or brackets looks cleaner for Cyberpunk?
+        // Let's do a glowing bracket
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(goalLeft, 10);
+        this.ctx.lineTo(goalLeft, 0);
+        this.ctx.lineTo(goalLeft + goalWidth, 0);
+        this.ctx.lineTo(goalLeft + goalWidth, 10);
+        this.ctx.stroke();
+
+        // Bottom Goal (Player 1 - Cyan)
+        this.ctx.shadowColor = '#00f3ff';
+        this.ctx.strokeStyle = '#00f3ff';
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(goalLeft, this.canvas.height - 10);
+        this.ctx.lineTo(goalLeft, this.canvas.height);
+        this.ctx.lineTo(goalLeft + goalWidth, this.canvas.height);
+        this.ctx.lineTo(goalLeft + goalWidth, this.canvas.height - 10);
+        this.ctx.stroke();
+
+        this.ctx.restore();
     }
 }

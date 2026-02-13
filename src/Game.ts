@@ -17,7 +17,7 @@ export class Game {
 
     score: [number, number] = [0, 0];
     scoreScale: number = 1;
-    state: 'MENU' | 'PLAYING' | 'SCORED' = 'MENU';
+    state: 'MENU' | 'PLAYING' | 'SCORED' | 'PAUSED' = 'MENU';
     tableAnimationProgress: number = 0;
 
     constructor() {
@@ -37,12 +37,48 @@ export class Game {
 
         // Input listener for Menu
         const startMenu = document.getElementById('start-menu');
+        const pauseMenu = document.getElementById('pause-menu');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resumeBtn = document.getElementById('resume-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // Start Game
         startMenu?.addEventListener('click', () => {
             if (this.state === 'MENU') {
                 this.state = 'PLAYING';
                 this.resetPuck();
                 startMenu.classList.add('hidden');
+                pauseBtn?.classList.remove('hidden');
             }
+        });
+
+        // Pause Game
+        pauseBtn?.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent game click
+            if (this.state === 'PLAYING') {
+                this.state = 'PAUSED';
+                pauseMenu?.classList.remove('hidden');
+                if (pauseBtn) pauseBtn.style.display = 'none'; // Hide pause button while paused?
+            }
+        });
+
+        // Resume Game
+        resumeBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.state === 'PAUSED') {
+                this.state = 'PLAYING';
+                pauseMenu?.classList.add('hidden');
+                if (pauseBtn) pauseBtn.style.display = 'flex';
+            }
+        });
+
+        // Restart Game
+        restartBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.resetGame();
+            this.state = 'PLAYING';
+            pauseMenu?.classList.add('hidden');
+            if (pauseBtn) pauseBtn.style.display = 'flex';
         });
 
         this.lastTime = performance.now();
