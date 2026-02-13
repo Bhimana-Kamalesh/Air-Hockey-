@@ -15,7 +15,7 @@ export class Entity {
 export class Puck extends Entity {
     vx: number = 0;
     vy: number = 0;
-    friction: number = 0.99;
+    friction: number = 0.995;
     maxSpeed: number = 1500;
 
     constructor(x: number, y: number) {
@@ -42,11 +42,19 @@ export class Puck extends Entity {
 
 export class Mallet extends Entity {
     // Player 1: Electric Blue (#00f3ff), Player 2: Neon Magenta (#ff00ff)
+    vx: number = 0;
+    vy: number = 0;
+
     constructor(x: number, y: number, isPlayer1: boolean) {
         super(x, y, 40, isPlayer1 ? '#00f3ff' : '#ff00ff');
     }
 
-    updatePosition(x: number, y: number) {
+    updatePosition(x: number, y: number, dt: number) {
+        // Calculate velocity based on movement
+        if (dt > 0) {
+            this.vx = (x - this.x) / dt;
+            this.vy = (y - this.y) / dt;
+        }
         this.x = x;
         this.y = y;
     }

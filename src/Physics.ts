@@ -36,31 +36,35 @@ export class Physics {
             const minDist = puck.radius + mallet.radius;
 
             if (distance < minDist) {
-                // simple elastic collision response
                 // Normal vector
                 const nx = dx / distance;
                 const ny = dy / distance;
 
-                // Push puck out of mallet to avoid sticking
+                // Push puck out to avoid sticking
                 const overlap = minDist - distance;
                 puck.x += nx * overlap;
                 puck.y += ny * overlap;
 
-                // Reflect velocity
-                // We add mallet velocity to the puck for a "hit" feel? 
-                // For now, let's just treat mallet as infinite mass static (or moving) object
-                // If we knew mallet velocity, we could impart impulse.
-                // Simplified bounce:
+                // Relative Velocity
+                const dvx = puck.vx - mallet.vx;
+                const dvy = puck.vy - mallet.vy;
 
-                const dot = puck.vx * nx + puck.vy * ny;
-                puck.vx = puck.vx - 2 * dot * nx;
-                puck.vy = puck.vy - 2 * dot * ny;
+                const dot = dvx * nx + dvy * ny;
 
-                // Add some "kick" if we can infer mallet speed, 
-                // but since we update mallet position directly, we don't calculate its velocity in Physics yet.
-                // We can add a simple boost for gameplay feel
-                puck.vx *= 1.1;
-                puck.vy *= 1.1;
+                // Only resolve if moving towards each other
+                if (dot < 0) {
+                    const restitution = 1.0; // Bounciness
+
+                    // Simple impulse model assuming mallet has infinite mass
+                    // j = -(1 + e) * v_rel . n
+                    const j = -(1 + restitution) * dot;
+
+                    puck.vx += j * nx;
+                    puck.vy += j * ny;
+
+                    // Add extra kick if mallet is moving fast to make it feel "powerful"
+                    // Clamp max speed somewhat?
+                }
             }
         }
     }

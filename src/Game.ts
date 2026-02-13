@@ -93,34 +93,74 @@ export class Game {
         }
 
         if (this.state !== 'PLAYING' && this.state !== 'SCORED') return;
+
         // Input Handling
         const pointers = this.input.getPointers();
 
-        if (pointers.length > 0) {
-            const p = pointers[0];
+        // Reset mallet velocities if no pointers (friction/decay for mallet?)
+        // Mallet position is absolute, so velocity is 0 if not updated.
+        // We calculate velocity in updatePosition, so if we don't call it, we should zero it?
+        // Actually, let's just update mallets based on pointers.
 
-            // Constrain mallet to bottom half
-            let destY = Math.max(p.y, this.canvas.height / 2 + this.mallets[0].radius);
-            destY = Math.min(destY, this.canvas.height - this.mallets[0].radius);
+        let p1Moved = false;
+        let p2Moved = false;
 
-            let destX = Math.max(p.x, this.mallets[0].radius);
-            destX = Math.min(destX, this.canvas.width - this.mallets[0].radius);
+        for (const p of pointers) {
+            // Player 1 (Bottom Half)
+            if (p.y > this.canvas.height / 2) {
+                // Constrain mallet to bottom half
+                let destY = Math.max(p.y, this.canvas.height / 2 + this.mallets[0].radius);
+                destY = Math.min(destY, this.canvas.height - this.mallets[0].radius);
 
-            this.mallets[0].updatePosition(destX, destY);
+                let destX = Math.max(p.x, this.mallets[0].radius);
+                destX = Math.min(destX, this.canvas.width - this.mallets[0].radius);
+
+                this.mallets[0].updatePosition(destX, destY, deltaTime);
+                p1Moved = true;
+            }
+            // Player 2 (Top Half)
+            else {
+                // Constrain mallet to top half
+                let destY = Math.max(p.y, this.mallets[1].radius);
+                destY = Math.min(destY, this.canvas.height / 2 - this.mallets[1].radius);
+
+                let destX = Math.max(p.x, this.mallets[1].radius);
+                destX = Math.min(destX, this.canvas.width - this.mallets[1].radius);
+
+                this.mallets[1].updatePosition(destX, destY, deltaTime);
+                p2Moved = true;
+            }
         }
 
-        // Basic AI for Player 2 (Top)
-        const aiMallet = this.mallets[1];
-        const targetX = this.puck.x;
-        const lerpSpeed = 5 * deltaTime;
-        aiMallet.x += (targetX - aiMallet.x) * lerpSpeed;
-        aiMallet.x = Math.max(aiMallet.radius, Math.min(this.canvas.width - aiMallet.radius, aiMallet.x));
-
-        let targetY = this.canvas.height * 0.15;
-        if (this.puck.y < this.canvas.height / 2 && this.puck.vy < 0) {
-            targetY = this.canvas.height * 0.25;
+        // Zero out velocity if not moved (so it doesn't keep "hitting" if static)
+        if (!p1Moved) {
+            this.mallets[0].vx = 0;
+            this.mallets[0].vy = 0;
         }
-        aiMallet.y += (targetY - aiMallet.y) * lerpSpeed;
+        if (!p2Moved) {
+            this.mallets[1].vx = 0;
+            this.mallets[1].vy = 0;
+        }
+
+        // Basic AI for Player 2 (If no touch on top half?)
+        // For local 2-player, we might want to disable AI if touch is detected, or just have AI take over if no touch?
+        // Let's say if p2Moved is false, AI takes over?
+        if (!p2Moved) {
+            const aiMallet = this.mallets[1];
+            const targetX = this.puck.x;
+            const lerp = 5 * deltaTime;
+
+            let nextX = aiMallet.x + (targetX - aiMallet.x) * lerp;
+            nextX = Math.max(aiMallet.radius, Math.min(this.canvas.width - aiMallet.radius, nextX));
+
+            let targetY = this.canvas.height * 0.15;
+            if (this.puck.y < this.canvas.height / 2 && this.puck.vy < 0) {
+                targetY = this.canvas.height * 0.25;
+            }
+            let nextY = aiMallet.y + (targetY - aiMallet.y) * lerp;
+
+            aiMallet.updatePosition(nextX, nextY, deltaTime);
+        }
 
 
         // Physics
