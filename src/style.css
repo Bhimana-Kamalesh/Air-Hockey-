@@ -66,6 +66,26 @@ body {
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
   pointer-events: auto;
+  max-width: 90%;
+  width: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .glass-panel {
+    padding: 1.5rem;
+    width: 90%;
+  }
+
+  .neon-text {
+    font-size: 2rem;
+  }
+
+  .neon-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+  }
 }
 
 .neon-text {

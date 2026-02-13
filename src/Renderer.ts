@@ -142,44 +142,48 @@ export class Renderer {
 
     drawGoals() {
         const goalWidth = this.canvas.width * 0.4;
-        const goalLeft = (this.canvas.width - goalWidth) / 2;
+        const goalRadius = goalWidth / 2;
+        const centerX = this.canvas.width / 2;
 
-        // Save context for glow
         this.ctx.save();
-        this.ctx.shadowBlur = 30;
-        this.ctx.shadowColor = '#00f3ff';
-        this.ctx.strokeStyle = '#00f3ff';
         this.ctx.lineWidth = 5;
         this.ctx.lineCap = 'round';
 
         // Top Goal (Player 2 - Magenta)
+        this.ctx.shadowBlur = 30;
         this.ctx.shadowColor = '#ff00ff';
         this.ctx.strokeStyle = '#ff00ff';
-        this.ctx.beginPath();
-        this.ctx.moveTo(goalLeft, 0);
-        this.ctx.lineTo(goalLeft + goalWidth, 0);
-        // Maybe a small arc inwards?
-        this.ctx.quadraticCurveTo(goalLeft + goalWidth / 2, 40, goalLeft + goalWidth, 0);
-        // Actually simple line or brackets looks cleaner for Cyberpunk?
-        // Let's do a glowing bracket
-        this.ctx.stroke();
+        this.ctx.fillStyle = 'rgba(255, 0, 255, 0.1)';
 
         this.ctx.beginPath();
-        this.ctx.moveTo(goalLeft, 10);
-        this.ctx.lineTo(goalLeft, 0);
-        this.ctx.lineTo(goalLeft + goalWidth, 0);
-        this.ctx.lineTo(goalLeft + goalWidth, 10);
+        // Draw semi-circle arc
+        this.ctx.arc(centerX, 0, goalRadius, 0, Math.PI, false);
         this.ctx.stroke();
+        this.ctx.fill();
+
+        // Goal Line (Thicker)
+        this.ctx.beginPath();
+        this.ctx.moveTo(centerX - goalRadius, 0);
+        this.ctx.lineTo(centerX + goalRadius, 0);
+        this.ctx.lineWidth = 8;
+        this.ctx.stroke();
+
 
         // Bottom Goal (Player 1 - Cyan)
         this.ctx.shadowColor = '#00f3ff';
         this.ctx.strokeStyle = '#00f3ff';
+        this.ctx.fillStyle = 'rgba(0, 243, 255, 0.1)';
 
         this.ctx.beginPath();
-        this.ctx.moveTo(goalLeft, this.canvas.height - 10);
-        this.ctx.lineTo(goalLeft, this.canvas.height);
-        this.ctx.lineTo(goalLeft + goalWidth, this.canvas.height);
-        this.ctx.lineTo(goalLeft + goalWidth, this.canvas.height - 10);
+        this.ctx.arc(centerX, this.canvas.height, goalRadius, Math.PI, 0, false);
+        this.ctx.stroke();
+        this.ctx.fill();
+
+        // Goal Line
+        this.ctx.beginPath();
+        this.ctx.moveTo(centerX - goalRadius, this.canvas.height);
+        this.ctx.lineTo(centerX + goalRadius, this.canvas.height);
+        this.ctx.lineWidth = 8;
         this.ctx.stroke();
 
         this.ctx.restore();
