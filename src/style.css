@@ -149,6 +149,54 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.icon-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  z-index: 20;
+  backdrop-filter: blur(5px);
+}
+
+.neon-btn {
+  display: block;
+  width: 200px;
+  margin: 10px auto;
+  padding: 15px;
+  background: transparent;
+  border: 2px solid #00f3ff;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.neon-btn:hover {
+  background: rgba(0, 243, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+  text-shadow: 0 0 5px #00f3ff;
+}
+
+#pause-menu {
+  z-index: 30;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
