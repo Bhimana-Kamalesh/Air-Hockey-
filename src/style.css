@@ -36,23 +36,25 @@ body {
   width: 100vw;
   height: 100vh;
   touch-action: none;
+
+  #ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
-}
-
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: 10;
-pointer-events: none;
-/* Let clicks pass through for game, but enable for buttons if needed */
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  /* Let clicks pass through for game, but enable for buttons if needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .glass-panel {
