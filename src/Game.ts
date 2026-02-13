@@ -128,7 +128,7 @@ export class Game {
             if (this.tableAnimationProgress > 1) this.tableAnimationProgress = 1;
         }
 
-        if (this.state !== 'PLAYING' && this.state !== 'SCORED') return;
+        if (this.state === 'PAUSED' || this.state === 'MENU') return;
 
         // Input Handling
         const pointers = this.input.getPointers();
@@ -231,20 +231,24 @@ export class Game {
         const goalLeft = (this.canvas.width - goalWidth) / 2;
         const goalRight = goalLeft + goalWidth;
 
-        if (this.puck.y < 0) {
-            if (this.puck.x > goalLeft && this.puck.x < goalRight) {
-                // Player 1 Scored!
-                this.handleGoal(1);
-            }
-        } else if (this.puck.y > this.canvas.height) {
-            if (this.puck.x > goalLeft && this.puck.x < goalRight) {
-                // Player 2 Scored!
-                this.handleGoal(2);
+        if (this.state === 'PLAYING') {
+            if (this.puck.y < 0) {
+                if (this.puck.x > goalLeft && this.puck.x < goalRight) {
+                    // Player 1 Scored!
+                    this.handleGoal(1);
+                }
+            } else if (this.puck.y > this.canvas.height) {
+                if (this.puck.x > goalLeft && this.puck.x < goalRight) {
+                    // Player 2 Scored!
+                    this.handleGoal(2);
+                }
             }
         }
     }
 
     handleGoal(player: number) {
+        if (this.state !== 'PLAYING') return;
+
         this.renderer.shake = 20;
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
